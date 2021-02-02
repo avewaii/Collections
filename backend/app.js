@@ -4,6 +4,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+console.log(process.env)
+
+const utils = require('./utils');
+
+utils.initDb()
+
 let usersRouter = require('./routes/users');
 let homeRouter = require('./routes/home');
 let sessionsRouter = require('./routes/sessions');
@@ -22,6 +28,9 @@ app.use('/api/', sessionsRouter);
 app.use('/api/', collectionsRouter);
 app.use('/api/', homeRouter)
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/public/index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

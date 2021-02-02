@@ -13,6 +13,7 @@ function Table() {
 
     useEffect(() => {
         (async () => {
+            //TODO: SHIT WITH detch, and no direct host, PLEASE
             let response = await fetch('http://localhost:3000/api/users/register');
             setUsers(Object.values(await response.json()))
         })()

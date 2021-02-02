@@ -3,15 +3,9 @@ const router = express.Router();
 const mysql = require("mysql");
 const crypto = require('crypto');
 const moment = require('moment');
+const utils = require('../utils')
 
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    database: "users",
-    password: "12345678"
-});
-
-connection.connect();
+const connection = utils.connection;
 
 router.post('/login', function (req, res, next) {
 
