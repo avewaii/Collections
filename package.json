@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "postinstall": "npm install --prefix backend && npm install --prefix frontend && npm run --prefix frontend build && mkdir -p backend/public && cp frontend/build/* backend/public/"
+    "postinstall": "npm install --prefix backend && npm install --prefix frontend && npm run --prefix frontend build && mkdir -p backend/public && cp -r frontend/build/* backend/public/"
   }
 }
