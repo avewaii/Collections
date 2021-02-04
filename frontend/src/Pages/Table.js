@@ -13,9 +13,11 @@ function Table() {
 
     useEffect(() => {
         (async () => {
-            //TODO: SHIT WITH detch, and no direct host, PLEASE
-            let response = await fetch('http://localhost:3000/api/users/register');
-            setUsers(Object.values(await response.json()))
+            axios.get('/api/users/register')
+                .then(response => setUsers(Object.values(response.data)))
+                .catch((error) => {
+                    console.log(error)
+                })
         })()
     }, [])
 

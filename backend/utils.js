@@ -1,15 +1,38 @@
 const mysql = require("mysql");
 const moment = require('moment');
 
-const connection = mysql.createConnection(
-    process.env.CLEARDB_DATABASE_URL ? process.env.CLEARDB_DATABASE_URL : {
+let connection = null;
+const db_config = process.env.CLEARDB_DATABASE_URL
+    ? process.env.CLEARDB_DATABASE_URL
+    : {
         host: "localhost",
         user: "root",
         database: "users",
         password: "12345678"
-    })
+    }
 
-connection.connect()
+function handleDisconnect() {
+    connection = mysql.createConnection(db_config); // Recreate the connection, since
+                                                    // the old one cannot be reused.
+
+    connection.connect(function(err) {              // The server is either down
+        if(err) {                                   // or restarting (takes a while sometimes).
+            console.log('error when connecting to db:', err);
+            setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+        }                                           // to avoid a hot loop, and to allow our node script to
+    });                                             // process asynchronous requests in the meantime.
+                                                    // If you're also serving http, display a 503 error.
+    connection.on('error', function(err) {
+        console.log('db error', err);
+        if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+            handleDisconnect();                       // lost due to either server restart, or a
+        } else {                                      // connnection idle timeout (the wait_timeout
+            throw err;                                // server variable configures this)
+        }
+    });
+}
+
+handleDisconnect();
 
 module.exports = {
     connection,
