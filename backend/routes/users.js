@@ -22,7 +22,7 @@ router.get('/register', function (req, res, next) {
 router.post('/register', function (req, res, next) {
 
     let passwordHash = crypto.createHash('sha256').update(req.body.password).digest('hex');
-    let data =  [req.body.email, passwordHash, moment().format('YYYY-MM-DD HH:mm:ss'), req.body.status];
+    let data =  [req.body.email, passwordHash, moment().format('YYYY-MM-DD HH:mm:ss')];
 
     connection.query('SELECT id FROM users WHERE email = ?', [req.body.email], function (err, results) {
 
@@ -32,7 +32,7 @@ router.post('/register', function (req, res, next) {
         } else {
             // не вернуло => свободен, продолжить рагистрацию
             // выполнить регистрацию, запомнить id пользователя
-            connection.query('INSERT INTO users(email, password, last_login, blocked) VALUES(?, ?, ?, ?) ', data, function (err, results) {
+            connection.query('INSERT INTO users(email, password, last_login) VALUES(?, ?, ?) ', data, function (err, results) {
                 // создать новую сессию этому пользователю
                 let sessionId = crypto.randomBytes(32).toString('hex');
 
